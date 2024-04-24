@@ -13,10 +13,20 @@ $birth_year = $_POST["birth_year"];
 $locate = $_POST["locate"];
 
 //Проверка уникальности почты
-$sql = "SELECT * FROM students WHERE email = '$email'";
-$result = $con->query($sql);
+// Предполагается, что $con - это ресурс соединения, полученный через mysqli_connect
+$sql = "SELECT * FROM students WHERE email = ?";
+$stmt = mysqli_prepare($con, $sql);
 
-if ($result->num_rows > 0) {
+// Привязываем параметр к запросу
+mysqli_stmt_bind_param($stmt, "s", $email);
+
+// Выполняем запрос
+mysqli_stmt_execute($stmt);
+
+// Получаем результат
+$result = mysqli_stmt_get_result($stmt);
+
+if (mysqli_num_rows($result) > 0) {
     header('Refresh: 0; register.html');
 
     echo '<script type="text/javascript">
@@ -24,6 +34,7 @@ if ($result->num_rows > 0) {
 </script>';
     exit;
 }
+
 
 // Подготовка SQL-запроса
 $stmt = $con->prepare("INSERT INTO students (name, second_name, gender, group_name, email, ege_score, birth_year, locate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
