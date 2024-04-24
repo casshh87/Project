@@ -21,7 +21,7 @@ include "connect.php";
 // Запрос к базе данных для получения данных пользователя по секретному коду
 $query = "SELECT * FROM students WHERE secret_code = ?";
 $stmt = $con->prepare($query);
-$stmt->bind_param("s", $secretCode); // Предполагается, что $secretCode содержит секретный код пользователя
+$stmt->bind_param("s", $secretCode); 
 $stmt->execute();
 $result = $stmt->get_result();
 $userData = $result->fetch_assoc();
